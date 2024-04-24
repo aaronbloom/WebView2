@@ -41,44 +41,44 @@ public partial class MainWindow
 
     private async void LoadMain()
     {
-        var env = await CoreWebView2Environment.CreateAsync(@"C:\tools\Microsoft.WebView2.FixedVersionRuntime.124.0.2478.51.x64");
+        var env = await CoreWebView2Environment.CreateAsync();
         await WebView.EnsureCoreWebView2Async(env);
         // Open dev tools
         WebView.CoreWebView2.OpenDevToolsWindow();
         // Create a simple HTML page that uses JS Atomics on a SharedArrayBuffer
         await WebView.CoreWebView2.ExecuteScriptAsync(
             $$"""
-                document.write(`
-                <html>
+              document.write(`
+              <html>
 
-                <head>
-                  <title>WebView2Atomics</title>
-                </head>
+              <head>
+                <title>WebView2Atomics</title>
+              </head>
 
-                <body>
-                  <h1>WebView2Atomics</h1>
-                  <p>WebView2Atomics is a simple WebView2 app that uses JS Atomics on a SharedArrayBuffer from C#.</p>
-                  <p>BrowserVersion: {{env.BrowserVersionString}}</p>
-                  <p>.NET Version: {{Environment.Version}}</p>
-                  <p>OS Version: {{Environment.OSVersion}}</p>
-                  <script>
-                    chrome.webview.addEventListener("sharedbufferreceived", (event) => {
-                      console.log("SharedBuffer event received", event);
-                      const sharedBuffer = event.getBuffer();
-                      console.log("SharedBuffer: ", sharedBuffer);
-                      const sharedArray = new Int32Array(sharedBuffer);
-                      // Try to lock the buffer using Atomics.wait
-                      console.log("Trying to lock buffer using Atomics.wait");
-                      Atomics.wait(sharedArray, 0, 0);
-                      // If we get here, the buffer was locked
-                      console.log("Buffer locked");
-                    });
-                  </script>
-                </body>
+              <body>
+                <h1>WebView2Atomics</h1>
+                <p>WebView2Atomics is a simple WebView2 app that uses JS Atomics on a SharedArrayBuffer from C#.</p>
+                <p>BrowserVersion: {{env.BrowserVersionString}}</p>
+                <p>.NET Version: {{Environment.Version}}</p>
+                <p>OS Version: {{Environment.OSVersion}}</p>
+                <script>
+                  chrome.webview.addEventListener("sharedbufferreceived", (event) => {
+                    console.log("SharedBuffer event received", event);
+                    const sharedBuffer = event.getBuffer();
+                    console.log("SharedBuffer: ", sharedBuffer);
+                    const sharedArray = new Int32Array(sharedBuffer);
+                    // Try to lock the buffer using Atomics.wait
+                    console.log("Trying to lock buffer using Atomics.wait");
+                    Atomics.wait(sharedArray, 0, 0);
+                    // If we get here, the buffer was locked
+                    console.log("Buffer locked");
+                  });
+                </script>
+              </body>
 
-                </html>
-                `);
-                """);
+              </html>
+              `);
+              """);
 
         // Create a SharedArrayBuffer and send it to the WebView
         var sharedBuffer = env.CreateSharedBuffer(256);
