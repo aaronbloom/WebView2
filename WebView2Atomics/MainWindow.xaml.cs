@@ -62,16 +62,146 @@ public partial class MainWindow
                 <p>.NET Version: {{Environment.Version}}</p>
                 <p>OS Version: {{Environment.OSVersion}}</p>
                 <script>
-                  chrome.webview.addEventListener("sharedbufferreceived", (event) => {
+                  chrome.webview.addEventListener("sharedbufferreceived", async (event) => {
                     console.log("SharedBuffer event received", event);
                     const sharedBuffer = event.getBuffer();
                     console.log("SharedBuffer: ", sharedBuffer);
                     const sharedArray = new Int32Array(sharedBuffer);
-                    // Try to lock the buffer using Atomics.wait
-                    console.log("Trying to lock buffer using Atomics.wait");
-                    Atomics.wait(sharedArray, 0, 0);
-                    // If we get here, the buffer was locked
-                    console.log("Buffer locked");
+                    console.log("SharedArray: ", sharedArray);
+
+                    console.log("Trying different Atomics operations on the SharedArrayBuffer");
+                    // Atomics methods
+                    // Atomics.add()
+                    // Atomics.and()
+                    // Atomics.compareExchange()
+                    // Atomics.exchange()
+                    // Atomics.isLockFree()
+                    // Atomics.load()
+                    // Atomics.notify()
+                    // Atomics.or()
+                    // Atomics.store()
+                    // Atomics.sub()
+                    // Atomics.wait()
+                    // Atomics.waitAsync()
+                    // Atomics.xor()
+
+                    try {
+                        console.log("Trying to Atomics.add(sharedArray, 0, 1)");
+                        const result = Atomics.add(sharedArray, 0, 1);
+                        console.log("Atomics.add succeeded", result);
+                    } catch (e) {
+                        console.log("Atomics.add failed", e);
+                    }
+
+                    try {
+                        console.log("Trying to Atomics.and(sharedArray, 0, 1)");
+                        const result = Atomics.and(sharedArray, 0, 1);
+                        console.log("Atomics.and succeeded", result);
+                    } catch (e) {
+                        console.log("Atomics.and failed", e);
+                    }
+
+                    try {
+                        console.log("Trying to Atomics.compareExchange(sharedArray, 0, 1, 2)");
+                        const result = Atomics.compareExchange(sharedArray, 0, 1, 2);
+                        console.log("Atomics.compareExchange succeeded", result);
+                    } catch (e) {
+                        console.log("Atomics.compareExchange failed", e);
+                    }
+
+                    try {
+                        console.log("Trying to Atomics.exchange(sharedArray, 0, 1)");
+                        const result = Atomics.exchange(sharedArray, 0, 1);
+                        console.log("Atomics.exchange succeeded", result);
+                    } catch (e) {
+                        console.log("Atomics.exchange failed", e);
+                    }
+
+                    try {
+                        console.log("Trying to Atomics.isLockFree(sharedArray)");
+                        const result = Atomics.isLockFree(sharedArray);
+                        console.log("Atomics.isLockFree succeeded", result);
+                    } catch (e) {
+                        console.log("Atomics.isLockFree failed", e);
+                    }
+
+                    try {
+                        console.log("Trying to Atomics.load(sharedArray, 0)");
+                        const result = Atomics.load(sharedArray, 0);
+                        console.log("Atomics.load succeeded", result);
+                    } catch (e) {
+                        console.log("Atomics.load failed", e);
+                    }
+
+                    try {
+                        console.log("Trying to Atomics.notify(sharedArray, 0, 1)");
+                        const result = Atomics.notify(sharedArray, 0, 1);
+                        if (result === 0) {
+                            // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/notify
+                            console.log("Atomics.notify returned 0, no waiters were notified");
+                        } else {
+                            console.log("Atomics.notify succeeded", result);
+                        }
+                    } catch (e) {
+                        console.log("Atomics.notify failed", e);
+                    }
+
+                    try {
+                        console.log("Trying to Atomics.or(sharedArray, 0, 1)");
+                        const result = Atomics.or(sharedArray, 0, 1);
+                        console.log("Atomics.or succeeded", result);
+                    } catch (e) {
+                        console.log("Atomics.or failed", e);
+                    }
+
+                    try {
+                        console.log("Trying to Atomics.store(sharedArray, 0, 1)");
+                        const result = Atomics.store(sharedArray, 0, 1);
+                        console.log("Atomics.store succeeded", result);
+                    } catch (e) {
+                        console.log("Atomics.store failed", e);
+                    }
+
+                    try {
+                        console.log("Trying to Atomics.sub(sharedArray, 0, 1)");
+                        const result = Atomics.sub(sharedArray, 0, 1);
+                        console.log("Atomics.sub succeeded", result);
+                    } catch (e) {
+                        console.log("Atomics.sub failed", e);
+                    }
+
+                    try {
+                        console.log("Trying to Atomics.wait(sharedArray, 0, 1)");
+                        Atomics.wait(sharedArray, 0, 1);
+                        console.log("Atomics.wait succeeded");
+                    } catch (e) {
+                        console.log("Atomics.wait failed", e);
+                    }
+
+                    try {
+                        console.log("Trying to Atomics.waitAsync(sharedArray, 0, 1)");
+                        const result = Atomics.waitAsync(sharedArray, 0, 1);
+                        if (result.async) {
+                            console.log("Atomics.waitAsync is async");
+                            const waitResult = await result.value;
+                            console.log("Atomics.waitAsync result", waitResult);
+                        } else {
+                            console.log("Atomics.waitAsync is not async");
+                        }
+                        console.log("Atomics.waitAsync succeeded");
+                    } catch (e) {
+                        console.log("Atomics.waitAsync failed", e);
+                    }
+
+                    try {
+                        console.log("Trying to Atomics.xor(sharedArray, 0, 1)");
+                        const result = Atomics.xor(sharedArray, 0, 1);
+                        console.log("Atomics.xor succeeded", result);
+                    } catch (e) {
+                        console.log("Atomics.xor failed", e);
+                    }
+
+                    console.log("Atomics operations on the SharedArrayBuffer completed", sharedArray);
                   });
                 </script>
               </body>
